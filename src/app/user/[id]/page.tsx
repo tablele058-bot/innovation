@@ -58,7 +58,7 @@ export default async function UserProfile({ params }: PageProps) {
               </div>
               <div className="text-center">
                 <span className="block font-semibold text-gray-900 dark:text-white">
-                  {userStartups.reduce((sum, s) => sum + s.views, 0)}
+                  {userStartups.reduce((sum: number, s: { views: number }) => sum + s.views, 0)}
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400">views</span>
               </div>
@@ -142,7 +142,7 @@ export default async function UserProfile({ params }: PageProps) {
 
           {userStartups.length > 0 ? (
             <div className="grid grid-cols-3 gap-1 sm:gap-2">
-              {userStartups.map((startup) => (
+              {userStartups.map((startup: { id: number; imageUrl: string | null; title: string; views: number }) => (
                 <Link
                   key={startup.id}
                   href={`/startup/${startup.id}`}

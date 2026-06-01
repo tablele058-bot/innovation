@@ -49,3 +49,5 @@ LPT2
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
