@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "./db";
-import { users, startups, startupViews } from "./schema";
+import { users, startups, startupViews, attendance } from "./schema";
 import { eq, and, ilike, desc, sql } from "drizzle-orm";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { generateRandomName } from "./random-name";
@@ -167,6 +167,71 @@ export async function deleteStartup(startupId: number) {
   revalidatePath("/");
   revalidatePath(`/user/${userId}`);
   redirect("/");
+}
+
+export async function getAttendance(clerkId: string) {
+  try {
+    return await db
+      .select()
+      .from(attendance)
+      .where(eq(attendance.clerkId, clerkId))
+      .orderBy(desc(attendance.date));
+  } catch (err) {
+    console.error("DB read error in getAttendance:", err);
+    return [];
+  }
+}
+
+export async function getAttendanceByMonth(clerkId: string, year: number, month: number) {
+  try {
+    const all = await getAttendance(clerkId);
+    const prefix = `${year}-${String(month).padStart(2, "0")}`;
+    return all.filter((r: any) => r.date.startsWith(prefix));
+  } catch (err) {
+    console.error("DB read error in getAttendanceByMonth:", err);
+    return [];
+  }
+}
+
+export async function markAttendance(date: string, status: string) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Not authenticated");
+
+  const existing = await db
+    .select()
+    .from(attendance)
+    .where(and(eq(attendance.clerkId, userId), eq(attendance.date, date)));
+
+  if (existing.length > 0) {
+    await db
+      .update(attendance)
+      .set({ status, updatedAt: new Date() })
+      .where(and(eq(attendance.clerkId, userId), eq(attendance.date, date)));
+  } else {
+    await db.insert(attendance).values({
+      clerkId: userId,
+      date,
+      status,
+    });
+  }
+
+  revalidatePath("/attendance");
+}
+
+export async function getAttendanceStats(clerkId: string) {
+  try {
+    const records = await getAttendance(clerkId);
+    return {
+      total: records.length,
+      present: records.filter((r: any) => r.status === "present").length,
+      absent: records.filter((r: any) => r.status === "absent").length,
+      late: records.filter((r: any) => r.status === "late").length,
+      leave: records.filter((r: any) => r.status === "leave").length,
+    };
+  } catch (err) {
+    console.error("DB read error in getAttendanceStats:", err);
+    return { total: 0, present: 0, absent: 0, late: 0, leave: 0 };
+  }
 }
 
 export async function incrementViews(id: number) {

@@ -27,6 +27,12 @@ export default function WorkspaceHeader() {
           >
             Profile
           </Link>
+          <Link
+            href="/attendance"
+            className="text-[11px] text-gray-500 hover:text-gray-300 transition-colors px-2 py-1 rounded hover:bg-[#3c3c3c]"
+          >
+            Attendance
+          </Link>
           <UserButton
             appearance={{
               elements: { avatarBox: "w-5 h-5" },
