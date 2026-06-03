@@ -23,15 +23,7 @@ A collaborative workspace built for **startup founders** to share ideas, showcas
 - **Masonry Grid** — Pinterest-style layout with category filters and search
 - **Categories** — Startup Ideas, Tools & Resources, Funding & Investors, Learning, News & Articles, Templates
 
-## Tech Stack
 
-- **Framework:** Next.js 16 (App Router)
-- **Language:** TypeScript
-- **Database:** PostgreSQL (YugabyteDB) via Drizzle ORM
-- **Auth:** Clerk
-- **AI:** Groq (llama-3.3-70b), Hugging Face
-- **Styling:** Tailwind CSS
-- **Icons:** Lucide React
 
 ## Getting Started
 
@@ -45,24 +37,5 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to see the result.
 
-## Environment Variables
 
-Create `.env.local` with:
 
-```
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-DATABASE_URL=
-GROQ_API_KEY=
-HUGGINGFACE_API_KEY=
-```
-
-## Push Schema to Database
-
-```bash
-npm run db:push
-```
-
-## License
-
-MIT
